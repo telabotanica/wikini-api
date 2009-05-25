@@ -1,0 +1,12 @@
+#navigation, #moteur_recherche, #commun, .copyright {
+  display:none;
+}
+#logo {
+  position: relative;
+  float:left;
+}
+#corps {
+  position: relative;
+  top:116px;
+  left:0;
+}

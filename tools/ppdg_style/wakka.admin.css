@@ -1,0 +1,100 @@
+/* GENERAL */
+.missingpage+a {
+  display:inline;
+}
+/* ADMINISTRATION : entête, pieds de page, nom du wiki, nom de la page, formulaire édition */
+.footer, .header {
+  padding: 5px;
+  margin: 0;
+  background: #cfcfcf;
+  border: 1px solid gray;
+  font-size: 0.8em;
+  text-align: center;
+}
+.footer a, .header a {
+  color:black;
+}
+.wiki_name {
+  color: white;
+  float: left;
+  font-size: 1.8em;
+  margin: 0px 0px 0px 100px;
+  padding: 10px;
+}
+.page_name { 
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  font-size: 1.4em;
+  margin: 0;
+  padding: 0;
+}
+.edit {
+  width: 100%;
+  height: 400px;
+}
+
+/* CONTRIBUTION ACTION ATTACH */
+/* - les images */
+/* - les images */
+.attach_maj{display:inline;}
+
+/* - le gestionnaire des uploads */
+.tableFM {border: thin solid Black; width: 100%;  }
+.tableFM thead { background-color: Silver; font-weight: bold; text-align: center;   }
+.tableFM tfoot { background-color: Silver; font-weight: bold; text-align: left;   }
+.tableFM tbody tr { text-align: center;  }
+.tableFMCol1 { background-color: Aqua; }
+.tableFMCol2 { background-color: Yellow; }
+
+/* CONTRIBUTION ACeditor */
+#toolbar {
+  margin: 0;
+  padding: 0;
+  height:20px;
+  background: #ccc;
+  border-top: 1px solid buttonhighlight;
+  border-left: 1px solid buttonhighlight;
+  border-bottom: 1px solid buttonshadow;
+  border-right: 1px solid buttonshadow;
+  text-align:left;
+}
+#toolbar img {
+  margin:0;
+}
+.buttons {
+  background: #ccc;
+  border: 1px solid #ccc;
+  margin: 1px;
+  float:left;
+}
+.raise{
+  border-top: 1px solid buttonhighlight;
+  border-left: 1px solid buttonhighlight;
+  border-bottom: 1px solid buttonshadow;
+  border-right: 1px solid buttonshadow;
+  background: #ccc;
+  margin:1;
+  float:left;
+}
+.press {
+  border-top: 1px solid buttonshadow;
+  border-left: 1px solid buttonshadow;
+  border-bottom: 1px solid buttonhighlight;
+  border-right: 1px solid buttonhighlight;
+  background: #ccc;
+  margin:1;
+  float:left;
+}
+.ACsearchbox {
+  background: #FFFFF8;
+  border: 0;
+  border-bottom: 1px solid #CCCCAA;
+  padding: 0;
+  margin: 0;
+  font-size:0.8em;
+}
+.texteChampsImage {
+  font-size: 0.8em;
+}
+

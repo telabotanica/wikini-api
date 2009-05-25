@@ -1,0 +1,121 @@
+/* GENERAL */
+body {
+  background-color: white;
+  color: black;
+  font-family: Arial, Helvetica, sans-serif, 'Lucida Grande', Verdana, Geneva, Lucida;
+  }
+a {
+  color: #bca46e;
+  font-weight: bold;}
+h1, h2, h3, h4, h5, form {
+  margin: 0;
+  padding: 0;
+}
+ul, ol {
+  margin-top: 0;
+  padding-top: 0;
+  padding-bottom: 0;}
+tt {
+  color: Navy;}
+address{
+  font-size: 1.2em;}
+/* ENTÊTE */
+.header {
+  padding: 10px;
+  padding-top: 0;}
+#site_titre h1 {
+  font-size:1.6em;
+  padding:0;
+  margin:0;
+}
+/* PAGE */
+.page {
+  background-color: white;
+  padding: 10px;}
+h1 {
+  color: white;
+  font-size: 1.7em;
+  font-weight: bold;}
+h2 {
+  margin: 2px 2px 2px 20px;
+  color: black;
+  font-size: 1.5em;
+  font-weight: bold;}
+h3 {
+  margin: 2px 2px 2px 40px;
+  color: black;
+  font-size: 1.3em;
+  font-weight: bold;}
+h4 {
+  margin: 2px 2px 2px 60px;
+  color: black;
+  font-size: 1.1em;
+  font-style: italic;}
+.page li {
+  padding-bottom: 0.8em;}
+/* ADMINISTRATION :*/
+.edit {
+  width: 100%;
+  height: 400px;}
+.footer {
+  clear: both;
+  background-color: #DDDDDD;
+  padding: 5px;
+  border: 1px inset;}
+.prev_alert {
+  background-color: red;
+  color: white;
+  font-size: 1.7em;
+  font-weight: bold;
+  margin-bottom: 5px;}
+/* DIVERS */
+.commentsheader{
+  visibility:hidden;}
+.error {
+  color: #CC3333;
+  font-weight: bold;}
+.indent {
+  margin-left: 40px;}
+.additions {
+  color: #008800;}
+.deletions {
+  color: #880000;}
+.add {
+  font-weight: bold;
+  color:#c00;
+  text-decoration: underline; }
+.del {
+  font-style: italic;
+  color:#c00;
+  text-decoration: line-through;}
+.code {
+  background: #FFFFFF;
+  border: solid #888888 2px;
+  font-family: "Courier New", Courier;
+  color: black;
+  font-size: 0.8em;
+  width: 100%;
+  height: 400px;
+  overflow: scroll;
+  padding: 3px;}
+.revisioninfo {
+  color: #AAAAAA;
+  padding-bottom: 20px;}
+.copyright {
+  font-size: 0.8em;
+  color: #AAAAAA;
+  text-align: right;}
+.copyright a {
+  color: #AAAAAA;}
+.searchbox {
+  background: #FFFFF8;
+  border: 0;
+  border-bottom: 1px solid #CCCCAA;
+  padding: 0;
+  margin: 0;}
+.hr_clear{
+  clear:both;
+  display:none;}
+.debug {
+  font-size: 0.8em;
+  color: #888888;}

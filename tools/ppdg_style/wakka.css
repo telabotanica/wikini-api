@@ -1,0 +1,190 @@
+/* GENERAL */
+body {
+  background: url(../../bibliotheque/images/graphisme/navigation_fond.jpg) repeat-y top left;}
+body, form{
+  margin: 0;
+  padding: 0;}
+ol, ul {
+  margin: 0.5em;
+  padding: 0;}
+a {
+  text-decoration:none;
+  border-bottom: 1px dotted black;}
+a:hover {
+  text-decoration: underline;
+  border-bottom: 0 none;
+  font-weight: bold;}
+img {
+  display:block;
+  margin: 5px 10px;
+  border-style: solid;
+  border-bottom-color: #333333;
+  border-right-color: #555555;
+  border-left-color: #BBBBBB;
+  border-top-color: #DDDDDD;}
+.missingpage+a {
+  display:none;}
+.titre_a_droite {
+  text-align: right;}
+/* MENU GAUCHE */
+#navigation {
+  background-color: #eec860;}
+#menu {
+  position: absolute;
+  top: 116px;
+  left: 0;
+  width: 150px;
+  margin: 5px 5px 0 5px;
+  background: url(../../bibliotheque/images/graphisme/menu_contenu.jpg) repeat-y;
+  background-color: #f5d58f;
+  border: none;
+  font-size: small;
+  font-weight: bold;}
+#menu br {
+  margin:0;
+  padding:0;}
+#menu li {
+  margin:0;
+  padding:5px 0 0 0;}
+#menu ul {
+  margin-top:0;
+  list-style-type: none;}
+#menu ul ul {
+  margin: 0 0 0 5px;
+  list-style-type: none;}
+#menu_debut, #menu_fin {
+  display: none;}
+#menu .indent{
+  margin-left: 5px;}
+#menu a {
+  color: white;
+  font-size: 1.1em;
+  font-weight: bold;}
+#titre_menu {
+  margin:0;
+  padding:0;
+  background: url(../../bibliotheque/images/graphisme/menu_haut.jpg) no-repeat top left;}
+#titre_contenu {
+  height:30px;
+  width:150px;
+  margin:0;
+  padding:0;
+  background: url(../../bibliotheque/images/graphisme/menu_bas.jpg) no-repeat bottom left;}
+
+/* ENTÊTE */
+#entete {
+  position: absolute;
+  top: 0;
+  left: 0;
+  margin: 0;
+  padding: 0;
+  height: 116px;
+  width: 100%;
+  background: url(../../bibliotheque/images/graphisme/entete_fond.jpg) repeat-x;
+  background-color: #eec860;}
+#logo {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 88px;
+  width: 105px;
+  margin: 5px;
+  padding: 0;}
+#logo img{
+  margin:0;
+  padding:0;
+  border:none;}
+#logo a {
+  border-bottom: 0 none;}
+#site_titre {
+  position: absolute;
+  top: 5px;
+  left: 178px;
+  height: 87px;
+  width: 440px;
+  padding:0.8em 0 0 0;
+  margin:0;
+  background: url(../../bibliotheque/images/graphisme/entete_titre_fond.jpg) no-repeat;}
+#site_titre h1 {
+  text-align: center;
+  text-transform:uppercase;
+  color:white;
+  font-weight:bold;}
+#commun {
+  position: absolute;
+  top: 65px;
+  right: 5px;}
+#commun a {
+  color: black;}
+#aller_menu, #aller_contenu {
+  display: none;}
+#moteur_recherche {
+  position: absolute;
+  top: 35px;
+  right: 5px;
+  margin: 0;}
+#moteur_recherche input {
+  background: #FFFFF8;}
+
+/* CORPS */
+#corps {
+  position: absolute;
+  top: 116px;
+  left: 178px; 
+  margin: 0;
+  padding: 0;
+  min-height: 332px;
+  width:auto;
+  min-width:400px;
+  background: url(../../bibliotheque/images/graphisme/arche.jpg) no-repeat top left;}
+
+/* PAGE */
+.page {
+  background-color: transparent;
+  height:100%;
+  min-height: 332px;
+  padding: 1em;
+  text-align: justify;}
+.page h1 {
+  padding:5px;
+  background-color: #bca46e;
+  text-align: center;
+  text-transform:uppercase;}
+.page h2, #titre_menu, #titre_contenu {
+  clear: both;
+  text-transform:uppercase;}
+.page h3 {
+  clear: both;}
+.page h4 {
+  clear: both;}
+
+/* DIVERS */
+.commentsheader{
+  display:none;}
+.nettoyeur, .copyright {
+  clear:both;
+  margin: 0;
+  padding: 0;}
+
+/* CONTRIBUTION ACTION ATTACH */
+/* - les images */
+.attach_maj{display:none;}
+/* marge de 0.5 em autour de l'image*/
+.attach_margin05em { margin: 0.5em;}
+/* marge de 1em autour de l'image*/
+.attach_margin1em { margin: 1em;}
+/* bloc flotant ? gauche */
+.attach_left {float: left;}
+/* bloc flotant ? droite */
+.attach_right {float: right;}
+/* bloc flotant centré */
+.attach_center {text-align:center;}
+/* pas de bordure */
+.attach_noborder {border-width: 0;}
+/* aligenement vertical au milieu */
+.attach_vmiddle {vertical-align: text-bottom;}
+
+/* CONTRIBUTION ACeditor */
+.image_left, .flotant_gauche {float: left;} /* bloc flotant ? gauche */
+.image_right, .flotant_droit {float: right;} /* bloc flotant ? droite */
+.image_center {text-align:center;} /* bloc centr? */
