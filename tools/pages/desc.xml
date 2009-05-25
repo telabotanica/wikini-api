@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<plugin name="nbrepages" version="0.1" active="1">
+  <author>Jean-Pascal MILCENT</author>
+  <label>Nombre de pages</label>
+  <desc>Actions affichant le nombre de page du Wikini.</desc>
+</plugin>
