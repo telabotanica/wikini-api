@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<plugin name="wkzcms" version="0.1" active="1">
+  <author>Jean-Pascal MILCENT</author>
+  <label>Actions pour transformer Wikini en CMS</label>
+  <desc>Deux actions permettant de transformer un Wikini en CMS.</desc>
+</plugin>
