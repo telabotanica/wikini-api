@@ -1,0 +1,190 @@
+/*Gallerie CSS en cas d'abscence de JS*/
+ .galerie {
+	background-color:white;
+	padding:0;
+	width:355px;
+	height:255px;
+	overflow:auto;
+	white-space:nowrap;}
+.galerie ul {
+	list-style: none;
+	padding:0;
+	margin:0;}
+.galerie ul li {
+	display:inline;}
+.galerie ul img {
+	border:5px solid #3e3e3e !important;
+	margin:5px !important;}
+.galerie ul a:hover img {
+	border:5px solid #fff;
+	color:#fff;}
+
+/* jQuery SlideViewer plugin*/
+/*preload classes*/
+.svw {
+	width:50px;
+	height:20px;	
+	background:#fff;} 
+.svw ul {
+	position:relative;
+	left:-999em;} 
+/*core classes*/
+.stripViewer {  
+	position:relative; 
+	overflow:hidden;  
+	border-style:solid;
+	border-bottom-color:#333333;
+	border-right-color:#555555;
+	border-left-color:#BBBBBB;
+	border-top-color:#DDDDDD;
+	border-width:5px;   
+	margin: 0 0 1px 0;}
+.stripViewer li a img {
+	border:none;
+	margin:0 auto;}
+.stripViewer ul {
+	margin:0; 
+	padding:0; 
+	position:relative; 
+	left:0; 
+	top:0; 
+	width:1%; 
+	list-style-type:none;}
+.stripViewer ul li{
+	float:left;} 
+/* galerie commentaire */
+.galerieCommentaire{
+	margin:5px 10px;}
+/* galerie vignette */
+.stripTransmitter { 
+	overflow:auto; 
+	width:1%;
+	margin:5px 10px;}
+.stripTransmitter ul { 
+	margin:0; 
+	padding:0; 
+	position:relative; 
+	list-style-type:none;} 
+.stripTransmitter ul li{ 
+	width:20px; 
+	float:left; 
+	padding:0;
+	margin:0 1px 1px 0;} 
+.stripTransmitter a{ 
+	font:bold 10px Verdana, Arial; 
+	text-align:center; 
+	line-height:22px; 
+	background:#444; 
+	color:#fff; 
+	text-decoration:none; 
+	display:block;
+	border:none;}
+.stripTransmitter a:hover, a.current{ 
+	background:#fff;
+	color:#444;}
+/*tooltips formatting*/ 
+#tooltip { 
+	background:#fff; 
+	color:#000; 
+	opacity:0.85; 
+	border:5px solid #dedede;}
+#tooltip h3 {
+	font:normal 10px Verdana;  
+	margin:0;
+	padding:6px 2px;  
+	border:0;}
+/**
+ * jQuery lightBox plugin
+ * This jQuery plugin was inspired and based on Lightbox 2 by Lokesh Dhakar (http://www.huddletogether.com/projects/lightbox2/)
+ * and adapted to me for use like a plugin from jQuery.
+ * @name jquery-lightbox-0.4.css
+ * @author Leandro Vieira Pinho - http://leandrovieira.com
+ * @version 0.4
+ * @date November 17, 2007
+ * @category jQuery plugin
+ * @copyright (c) 2007 Leandro Vieira Pinho (leandrovieira.com)
+ * @license CC Attribution-No Derivative Works 2.5 Brazil - http://creativecommons.org/licenses/by-nd/2.5/br/deed.en_US
+ * @example Visit http://leandrovieira.com/projects/jquery/lightbox/ for more informations about this jQuery plugin
+ */
+#jquery-overlay {
+	position:absolute;
+	top:0;
+	left:0;
+	z-index:90;
+	width:100%;
+	height:500px;}
+#jquery-lightbox {
+	position:absolute;
+	top:0;
+	left:0;
+	width:100%;
+	z-index:100;
+	text-align:center;
+	line-height:0;}
+#jquery-lightbox img {
+	margin:0 auto;}
+#lightbox-container-image-box {
+	position:relative;
+	background-color:#fff;
+	width:250px;
+	height:250px;
+	margin:0 auto;}
+#lightbox-container-image {
+	padding:5px 0;}
+#lightbox-loading {
+	position:absolute;
+	top:40%;
+	left:0%;
+	height:25%;
+	width:100%;
+	text-align:center;
+	line-height:0;}
+#lightbox-nav {
+	position:absolute;
+	top:0;
+	left:0;
+	height:100%;
+	width:100%;
+	z-index:10;}
+#lightbox-container-image-box > #lightbox-nav {
+	left:0;}
+#lightbox-nav a {
+	outline:none;}
+#lightbox-nav-btnPrev, #lightbox-nav-btnNext {
+	width:49%;
+	height:100%;
+	zoom:1;
+	display:block;
+	border-bottom:0 none;}
+#lightbox-nav-btnPrev { 
+	left:0; 
+	float:left;}
+#lightbox-nav-btnNext { 
+	right:0;
+	float:right;}
+#lightbox-container-image-data-box {
+	font:10px Verdana, Helvetica, sans-serif;
+	background-color:#fff;
+	margin:0 auto;
+	line-height:1.4em;
+	overflow:auto;
+	width:100%;
+	padding:0 10px 0;}
+#lightbox-container-image-data {
+	padding:0 10px;
+	color:#666;}
+#lightbox-container-image-data #lightbox-image-details { 
+	width:70%;
+	float:left;
+	text-align:left;}
+#lightbox-image-details-caption {
+	font-weight:bold;}
+#lightbox-image-details-currentNumber {
+	display:block; 
+	clear:left; 
+	padding-bottom:1.0em;}
+#lightbox-secNav-btnClose {
+	width:66px; 
+	float:right;
+	padding:0 0.7em 0.7em 0;
+	border-bottom:0 none;}

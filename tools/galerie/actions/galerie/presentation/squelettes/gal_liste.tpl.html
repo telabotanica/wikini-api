@@ -1,0 +1,42 @@
+<!-- GALLERIE - DEBUT -->
+<?php if ($erreur) : ?>
+
+<p class="pap_erreur"><?=$erreur;?></p>
+
+<?php else : ?>
+<script type="text/javascript">
+// Galerie : SliderViewer
+jQuery(function(){
+	// Nous cachons les images si le javascript est activé!
+	jQuery("div#<?=$id;?>").removeClass("galerie");
+	jQuery("div#<?=$id;?>").addClass("svw"); 
+});
+$(window).bind("load", function() { 
+	$("div#<?=$id;?>").slideView({ 
+		easeFunc: "easeInOutSine", 
+		easeTime: 500,
+		largeur: <?=$css['largeur'];?>,// nous indiquons la largeur ici pour éviter les bogues de ie7 qui ne reconnait pas la bonne largeur d'img
+		toolTip: false 
+	});
+});
+// Galerie : LightBox
+$(function() {
+	$('div#<?=$id;?> a').lightBox();
+});
+</script>
+<div class="galerie_globale">
+	<div id="<?=$id;?>" class="galerie">
+		<ul>
+	<?php foreach ($images as $image) : ?>
+			<li style="width:<?=$css['largeur'];?>px;">
+				<a href="<?=$image['url_img'];?>" rel="lightbox" title="<?=$image['title'];?>">
+					<!-- bien laisser les margin et border à 0 dans style pour résoudre les bugs avec ie6 -->
+					<img style="width:<?=$css['largeur'];?>px;margin:0;border:none;" src="<?=$image['url_img_mini'];?>" alt="<?=$image['fichier_nom'];?>" title="<?=$image['title'];?>"/>
+				</a>
+			</li>
+	<?php endforeach; ?>
+		</ul>
+	</div>
+</div>
+<?php endif; ?>
+<!-- GALLERIE - FIN -->
