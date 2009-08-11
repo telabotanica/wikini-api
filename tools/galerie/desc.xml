@@ -2,56 +2,5 @@
 <plugin name="wkgalerie" version="0.1" active="1">
   <author>Jean-Pascal MILCENT</author>
   <label>Galerie de photos</label>
-  <desc>Galerie de photos utilisant Jquery et rassemblant le code suivant :
-jQuery lightBox plugin
- * This jQuery plugin was inspired and based on Lightbox 2 by Lokesh Dhakar (http://www.huddletogether.com/projects/lightbox2/)
- * and adapted to me for use like a plugin from jQuery.
- * @name jquery-lightbox-0.4.js
- * @author Leandro Vieira Pinho - http://leandrovieira.com
- * @version 0.4
- * @date November 17, 2007
- * @category jQuery plugin
- * @copyright (c) 2007 Leandro Vieira Pinho (leandrovieira.com)
- * @license CC Attribution-No Derivative Works 2.5 Brazil - http://creativecommons.org/licenses/by-nd/2.5/br/deed.en_US
- * @example Visit http://leandrovieira.com/projects/jquery/lightbox/ for more informations about this jQuery plugin</desc>
-
- jQuery SliderViewer Plugin
- * @name jquery.slideviewer.1.1.js
- * @author Gian Carlo Mingati - http://www.gcmingati.net/wordpress/wp-content/lab/jquery/imagestrip/imageslide-plugin.html
- * @version 1.1
- * @date October 6, 2007
- * @category jQuery plugin
- * @copyright (c) 2007 Gian Carlo Mingati (gcmingati.net)
- * @license ?
- * @example Visit http://www.gcmingati.net/wordpress/wp-content/lab/jquery/imagestrip/imageslide-plugin.html for more informations about this jQuery plugin
- 
-  * jQuery Easing v1.3 - http://gsgd.co.uk/sandbox/jquery/easing/
- *
- * Uses the built In easIng capabilities added In jQuery 1.1
- * to offer multiple easIng options
- *
- * @copyright (c) 2007 George Smith
- * @license Licensed under the MIT License: http://www.opensource.org/licenses/mit-license.php
- 
-  * jQuery Tooltip plugin 1.1
- *
- * http://bassistance.de/jquery-plugins/jquery-plugin-tooltip/
- *
- * Copyright (c) 2006 Jörn Zaefferer, Stefan Petre
- *
- * Dual licensed under the MIT and GPL licenses:
- *   http://www.opensource.org/licenses/mit-license.php
- *   http://www.gnu.org/licenses/gpl.html
- *
- * Revision: $Id: jquery.tooltip.js 2237 2007-07-04 19:11:15Z joern.zaefferer $
- 
- Copyright (c) 2007 Paul Bakaus (paul.bakaus@googlemail.com) and Brandon Aaron (brandon.aaron@gmail.com || http://brandonaaron.net)
- * Dual licensed under the MIT (http://www.opensource.org/licenses/mit-license.php)
- * and GPL (http://www.opensource.org/licenses/gpl-license.php) licenses.
- *
- * $LastChangedDate: 2007-06-22 04:38:37 +0200 (Fr, 22 Jun 2007) $
- * $Rev: 2141 $
- *
- * Version: 1.0b2
- </desc>
+  <desc>Galerie de photos utilisant Jquery et rassemblant le code jQuery lightBox plugin, jQuery SliderViewer Plugin, jQuery Easing v1.3, jQuery Tooltip plugin 1.1</desc>
 </plugin>
