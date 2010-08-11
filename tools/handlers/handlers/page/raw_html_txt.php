@@ -1,7 +1,7 @@
 <?php
 /*
-raw.php
-
+raw_html_txt.php
+Copyright 2010  Jean-Pascal MILCENT
 Copyright 2002  David DELON
 Copyright 2003  Eric FELDSTEIN
 Copyright 2003  Charles NEPOTE
@@ -22,25 +22,17 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 //vérification de sécurité
 if (!eregi("wakka.php", $_SERVER['PHP_SELF'])) {
-    die ("acc&egrave;s direct interdit");
+    die ("Accés direct interdit");
 }
 
-if ($this->HasAccess("read"))
-{
-	if (!$this->page)
-	{
+if ($this->HasAccess('read')) {
+	if (!$this->page)	{
 		return;
-	}
-	else
-	{
+	} else {
 		header("Content-type: text/plain");
-		// display raw page
-		//echo $this->page["body"];
 		echo $this->Format($this->page["body"], "wakka");
 	}
-}
-else
-{
+} else {
 	return;
 }
 ?>
