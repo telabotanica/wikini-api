@@ -2,5 +2,8 @@
 <plugin name="handlers" version="0.1" active="1">
   <author>Jean-Pascal MILCENT</author>
   <label>Handlers supplementaires</label>
-  <desc>Plugin fournissant de nouveaux handlers a Wikini.</desc>
+  <desc>Plugin fournissant de nouveaux handlers a Wikini : 
+   - raw_html : affiche le contenu du body de la page wikini au format html dans une page html de base (utile pour les iFrame)
+   - raw_html_txt : affiche le contenu du body de la page wikini au format html. Le html n'est pas interprété par le navigateur car il est envoyé avec l'entête text/plain. Utile pour 
+  </desc>
 </plugin>
