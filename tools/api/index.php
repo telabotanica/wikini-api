@@ -1,6 +1,6 @@
 <?php
 // Administration
-// Vérification de sécurité
+// Vï¿½rification de sï¿½curitï¿½
 if (!defined("TOOLS_MANAGER")) {
 	die ("acc&egrave;s direct interdit");
 }
