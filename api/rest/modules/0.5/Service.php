@@ -6,17 +6,7 @@ abstract class Service extends RestService {
 
 	protected function formaterEnJsonp($donnees = null, $encodage = 'utf-8') {
 		$contenu = $_GET['callback'].'('.json_encode($donnees).');';
-		return $this->preparerEnvoie($contenu, 'text/html', $encodage);
-	}
-	
-	protected function formaterEnJson($donnees = null, $encodage = 'utf-8') {
-		$contenu = json_encode($donnees);
-		return $this->preparerEnvoie($contenu, 'application/json', $encodage);
-	}
-	
-	private function preparerEnvoie($sortie = 'OK', $mime = 'text/html', $encodage = 'utf-8') {
-		$this->envoyerEnteteContenu($encodage, $mime);
-		return $sortie;
+		return $contenu;
 	}
 
 	private function envoyerEnteteContenu($encodage, $mime) {
@@ -26,6 +16,13 @@ abstract class Service extends RestService {
 			header("Content-Type: $mime");
 		}
 	}
+	
+	public function envoyerContenuJson($donnees = null, $encodage = 'utf-8') {
+		$contenu = json_encode($donnees);
+		$this->envoyerEnteteContenu($encodage, 'application/json');
+		echo $contenu;
+		exit;
+	}
 		
 	protected function envoyerAuth($message_accueil, $message_echec) {
 		header('HTTP/1.0 401 Unauthorized');
@@ -33,6 +30,11 @@ abstract class Service extends RestService {
 		header('Content-type: text/plain; charset=UTF-8');
 		print $message_echec;
 		exit(0);
+	}
+	
+	protected function envoyerErreur($e) {
+		header($e->getCode());
+		echo $e->getMessage();
 	}
 }
 ?>

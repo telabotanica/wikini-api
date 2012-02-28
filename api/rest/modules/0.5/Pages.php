@@ -20,49 +20,72 @@ class Pages extends Service {
 	
 	private $retour = 'txt';
 	private $formats_retour = array('txt','html');
+	private $format_texte;
+	
+	const MIME_JSON = 'application/json';
+	const MIME_HTML = 'text/html';
+	const MIME_TEXT = 'text/plain';
 	
 	public function consulter($ressources, $parametres) {
-		header('Content-type: text/plain');
-		$verifOk = $this->verifierParametres($parametres);
-		if ($verifOk) {
-			$this->pageNom = $ressources[0];
-			$page = $this->consulterPage($ressources[0]);
-			return $this->formaterRetour($page);
-		} else {
-			RestServeur::envoyerEnteteStatutHttp(RestServeur::HTTP_CODE_MAUVAISE_REQUETE);		
+		
+		try {
+			$this->definirValeurParDefautDesParametres();
+			$this->verifierParametres($parametres);
+			$this->analyserParametres($ressources, $parametres);
+			
+			$page = $this->consulterPage($this->pageNom);
+			$retour = $this->formaterRetour($page);
+			
+			$this->envoyerContenuJson($retour);
+		} catch (Exception $e) {
+			$this->envoyerErreur($e);
 		}
 	}
 	
 	private function definirValeurParDefautDesParametres() {
-		if (isset($this->parametres['retour']) == false) {
-			$this->parametres['retour'] = self::MIME_JSON;
-		}
 		if (isset($this->parametres['txt_format']) == false) {
 			$this->parametres['txt_format'] = 'txt';
 		}
 	}
 	
 	private function verifierParametres($parametres) {
-		$ok = true;
+		$erreurs = array();
+		
 		if (isset($parametres['txt_format'])) {
 			if(!in_array($parametres['txt_format'], $this->formats_retour)) {
 				$message = "La valeur du paramètre 'txt.format' peut seulement prendre les valeurs : txt et html.";
-				$this->ajouterMessage($message);
-				$ok = false;
-			} else {
-				$this->retour = $parametres['txt_format'];
+				$erreurs[] = $message;
 			}
 		}
 		
-		if(isset($parametres['txt_section_position'])) {
-			$this->section = $parametres['txt_section_position'];
+		if(isset($parametres['txt_section_position']) && !is_numeric($parametres['txt_section_position'])) {
+			$message = "La valeur du paramètre 'txt.section.position' peut seulement prendre des valeurs numeriques";
+			$erreurs[] = $message;
 		}
 		
+		if(isset($parametres['txt_section_titre']) && trim($parametres['txt_section_titre']) == '') {
+			$message = "La valeur du paramètre 'txt.section.titre' ne peut pas être vide si celui-ci est présent";
+			$erreurs[] = $message;
+		}
+				
+		if (count($erreurs) > 0) {
+			$message = implode('<br />', $erreurs);
+			$code = RestServeur::HTTP_CODE_MAUVAISE_REQUETE;
+			throw new Exception($message, $code);
+		}
+	}
+	
+	private function analyserParametres($ressources, $parametres) {	
+		$this->pageNom = $ressources[0];
 		if(isset($parametres['txt_section_titre'])) {
 			$this->section = $parametres['txt_section_titre'];
 		}
-		
-		return $ok;
+		if(isset($parametres['txt_section_position'])) {
+			$this->section = $parametres['txt_section_position'];
+		}
+		if (isset($parametres['txt_format'])) {
+			$this->retour = $parametres['txt_format'];
+		}
 	}
 	
 	private function consulterPage($page) {
@@ -145,18 +168,26 @@ class Pages extends Service {
 	
 	private function formaterRetour($page) {
 
+		$mime = null;
+		$texte = '';
+		
 		switch($this->retour) {
 			case 'html':
-				$retour = $this->wiki->Format($page["body"], "wakka");
+				$texte = $this->wiki->Format($page["body"], "wakka");
+				$mime = self::MIME_HTML;
 				break;
 			default:
-				$retour = $page["body"];
+				$texte = $page["body"];
+				$mime = self::MIME_TEXT;
 		}
+		
+		$retour = array('id' => $this->pageNom,
+				'titre' => $this->pageNom,
+				'mime' => $mime,
+				'texte' => $texte,
+				'href' => '');
+		
 		return $retour;
-	}
-	
-	private function formaterRetourHtml($retour) {
-	
 	}
 }	
 ?>

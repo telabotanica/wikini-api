@@ -23,12 +23,11 @@ class WikiApi {
         chdir($this->cheminApi);
 	}
 	
-	public function setPageCourrante($page) {
+	public function setPageCourante($page) {
 		$this->page = $page;
 	}
 	
 	public function __call($methodeNom, $arguments) {
-        //echo $methodeNom."/";
         if ($this->wikiObjet == null) {
         	$this->initialiser();
         }
