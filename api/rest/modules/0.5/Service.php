@@ -36,5 +36,14 @@ abstract class Service extends RestService {
 		header($e->getCode());
 		echo $e->getMessage();
 	}
+	
+	protected function envoyerCreationEffectuee() {
+		header('HTTP/1.1 201 Created');
+		echo "OK";
+	}
+
+	protected function envoyerErreurServeur() {
+		header('HTTP/1.1 500 Internal Server Error');
+	}
 }
 ?>

@@ -19,7 +19,7 @@ class Pages extends Service {
 	private $section = null;
 	
 	private $retour = 'txt';
-	private $formats_retour = array('txt','html');
+	private $formats_retour = array('text/plain','text/html');
 	private $format_texte;
 	
 	const MIME_JSON = 'application/json';
@@ -33,7 +33,7 @@ class Pages extends Service {
 			$this->verifierParametres($parametres);
 			$this->analyserParametres($ressources, $parametres);
 			
-			$page = $this->consulterPage($this->pageNom);
+			$page = $this->consulterPage($this->pageNom, $this->section);
 			$retour = $this->formaterRetour($page);
 			
 			$this->envoyerContenuJson($retour);
@@ -53,7 +53,7 @@ class Pages extends Service {
 		
 		if (isset($parametres['txt_format'])) {
 			if(!in_array($parametres['txt_format'], $this->formats_retour)) {
-				$message = "La valeur du paramètre 'txt.format' peut seulement prendre les valeurs : txt et html.";
+				$message = "La valeur du paramètre 'txt.format' peut seulement prendre les valeurs : text/plain et text/html.";
 				$erreurs[] = $message;
 			}
 		}
@@ -88,24 +88,21 @@ class Pages extends Service {
 		}
 	}
 	
-	private function consulterPage($page) {
+	private function consulterPage($page, $section = null) {
 		$this->wiki = Registre::get('wikiApi');
 		$this->wiki->setPageCourante($this->pageNom);
 		$page = $this->wiki->LoadPage($page);
-		
 		// attention les wikis sont en ISO !
-		if(Config::get('encodage_appli') != Config::get('encodage_wiki')) {
-			$page["body"] = mb_convert_encoding($page['body'],Config::get('encodage_appli'),Config::get('encodage_wiki'));
-		}
+		$page["body"] = $this->convertirTexteWikiVersEncodageAppli($page['body']);
 	
-		if($this->section != null) {
-			$page["body"] = $this->découperPageSection($page["body"], $this->section);
+		if($section != null) {
+			$page["body"] = $this->decouperPageSection($page["body"], $section);
 		}
 	
 		return $page;
 	}
 	
-	private function découperPageSection($contenu_page, $section) {
+	private function decouperPageSection($contenu_page, $section) {
 	
 		$section_retour = '';
 	
@@ -155,10 +152,10 @@ class Pages extends Service {
 		
 		if(count($match) > 3) {
 			$section = explode(trim($match[2]), $match[3], 2);
-			$section = $match[1].' '.$section[0];
+			$section = $match[1].$section[0];
 		} elseif(count($match) == 2) {
 			$section = explode(trim($match[1]), $match[2], 2);
-			$section = $match[0].' '.$section[0];
+			$section = $match[0].$section[0];
 		} else {
 			$section = "";
 		}
@@ -172,7 +169,7 @@ class Pages extends Service {
 		$texte = '';
 		
 		switch($this->retour) {
-			case 'html':
+			case self::MIME_HTML:
 				$texte = $this->wiki->Format($page["body"], "wakka");
 				$mime = self::MIME_HTML;
 				break;
@@ -181,13 +178,64 @@ class Pages extends Service {
 				$mime = self::MIME_TEXT;
 		}
 		
+		$url = $this->wiki->Href("", $this->pageNom);
+		
 		$retour = array('id' => $this->pageNom,
 				'titre' => $this->pageNom,
 				'mime' => $mime,
 				'texte' => $texte,
-				'href' => '');
+				'href' => $url);
 		
 		return $retour;
+	}
+	
+	public function ajouter($ressources, $requeteDonnees) {
+		return $this->modifier($ressources, $requeteDonnees);
+	}
+	
+	public function modifier($ressources, $requeteDonnees) {
+	
+		$this->pageNom = $ressources[0];
+		$this->wiki = Registre::get('wikiApi');
+		$this->wiki->setPageCourante($this->pageNom);
+		
+		$section = (isset($requeteDonnees['txt.section.titre']) && trim($requeteDonnees['txt.section.titre']) != "") ? $requeteDonnees['txt.section.titre'] : null;
+		$texte = $requeteDonnees['texte'];
+		
+		$page = $this->consulterPage($this->pageNom);
+		$corps = $page['body'];
+		$section_page_originale = $corps;
+		
+		if($section != null) {
+			$section_page_originale = $this->decouperPageSection($corps, $section);
+		}	
+		
+		$page_remplacee = str_replace($section_page_originale, $texte, $corps);
+		
+		$texte_encode = $this->convertirTexteAppliVersEncodageWiki($page_remplacee);
+		$ecriture = $this->wiki->SavePage($this->pageNom, $texte_encode, "", true);
+	
+		if($ecriture) {
+			$this->envoyerCreationEffectuee();
+		} else {
+			$this->envoyerErreurServeur();
+		}
+		
+		return $ecriture;
+	}
+	
+	private function convertirTexteWikiVersEncodageAppli($texte) {
+		if(Config::get('encodage_appli') != Config::get('encodage_wiki')) {
+			$texte = mb_convert_encoding($texte,Config::get('encodage_appli'),Config::get('encodage_wiki'));
+		}
+		return $texte;
+	}
+	
+	private function convertirTexteAppliVersEncodageWiki($texte) {
+		if(Config::get('encodage_appli') != Config::get('encodage_wiki')) {
+			$texte = mb_convert_encoding($texte,Config::get('encodage_wiki'),Config::get('encodage_appli'));
+		}
+		return $texte;
 	}
 }	
 ?>
