@@ -33,17 +33,13 @@ abstract class Service extends RestService {
 	}
 	
 	protected function envoyerErreur($e) {
-		header($e->getCode());
+		RestServeur::envoyerEnteteStatutHttp($e->getCode());
 		echo $e->getMessage();
 	}
 	
 	protected function envoyerCreationEffectuee() {
 		header('HTTP/1.1 201 Created');
 		echo "OK";
-	}
-
-	protected function envoyerErreurServeur() {
-		header('HTTP/1.1 500 Internal Server Error');
 	}
 }
 ?>

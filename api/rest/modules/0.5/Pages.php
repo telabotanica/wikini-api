@@ -34,6 +34,11 @@ class Pages extends Service {
 			$this->analyserParametres($ressources, $parametres);
 			
 			$page = $this->consulterPage($this->pageNom, $this->section);
+			if ($page == null) {
+				$message = 'La page demandée n\'existe pas';
+				$code = RestServeur::HTTP_CODE_RESSOURCE_INTROUVABLE;
+				throw new Exception($message, $code);
+			}
 			$retour = $this->formaterRetour($page);
 			
 			$this->envoyerContenuJson($retour);
@@ -44,7 +49,7 @@ class Pages extends Service {
 	
 	private function definirValeurParDefautDesParametres() {
 		if (isset($this->parametres['txt_format']) == false) {
-			$this->parametres['txt_format'] = 'txt';
+			$this->parametres['txt_format'] = 'text/plain';
 		}
 	}
 	
@@ -89,14 +94,18 @@ class Pages extends Service {
 	}
 	
 	private function consulterPage($page, $section = null) {
+		
 		$this->wiki = Registre::get('wikiApi');
 		$this->wiki->setPageCourante($this->pageNom);
 		$page = $this->wiki->LoadPage($page);
-		// attention les wikis sont en ISO !
-		$page["body"] = $this->convertirTexteWikiVersEncodageAppli($page['body']);
-	
-		if($section != null) {
-			$page["body"] = $this->decouperPageSection($page["body"], $section);
+		
+		if($page != null) {
+			// attention les wikis sont souvent en ISO !
+			$page["body"] = $this->convertirTexteWikiVersEncodageAppli($page['body']);
+		
+			if($section != null) {
+				$page["body"] = $this->decouperPageSection($page["body"], $section);
+			}
 		}
 	
 		return $page;
@@ -194,34 +203,72 @@ class Pages extends Service {
 	}
 	
 	public function modifier($ressources, $requeteDonnees) {
-	
-		$this->pageNom = $ressources[0];
+			
+		$this->verifierParametresEcriture($requeteDonnees);
+		$this->analyserParametresEcriture($requeteDonnees);
+		
 		$this->wiki = Registre::get('wikiApi');
 		$this->wiki->setPageCourante($this->pageNom);
 		
-		$section = (isset($requeteDonnees['txt.section.titre']) && trim($requeteDonnees['txt.section.titre']) != "") ? $requeteDonnees['txt.section.titre'] : null;
 		$texte = $requeteDonnees['texte'];
-		
 		$page = $this->consulterPage($this->pageNom);
-		$corps = $page['body'];
-		$section_page_originale = $corps;
-		
-		if($section != null) {
-			$section_page_originale = $this->decouperPageSection($corps, $section);
+				
+		if($page != null) {
+			$corps = ($this->section != null) ? $this->remplacerSection($this->section, $texte, $page['body']) : $texte;	
+		} else {
+			$corps = $texte;
 		}	
-		
-		$page_remplacee = str_replace($section_page_originale, $texte, $corps);
-		
-		$texte_encode = $this->convertirTexteAppliVersEncodageWiki($page_remplacee);
-		$ecriture = $this->wiki->SavePage($this->pageNom, $texte_encode, "", true);
-	
+		$ecriture = $this->ecrirePage($this->pageNom, $corps);	
 		if($ecriture) {
 			$this->envoyerCreationEffectuee();
 		} else {
-			$this->envoyerErreurServeur();
+			$message = 'Impossible de créer ou modifier la page';
+			$code = RestServeur::HTTP_CODE_ERREUR;
+			throw new Exception($message, $code);
 		}
 		
 		return $ecriture;
+	}
+	
+	private function remplacerSection($titre_ou_numero_section, $section_remplacement, $corps) {
+		$section_page_originale = $this->decouperPageSection($corps, $titre_ou_numero_section);
+		$contenu = str_replace($section_page_originale, $texte, $corps);
+		
+		return $contenu;
+	}
+	
+	private function ecrirePage($nom_page, $contenu) {
+		
+		$texte_encode = $this->convertirTexteAppliVersEncodageWiki($contenu);
+		$ecriture = $this->wiki->SavePage($nom_page, $texte_encode, "", true);
+		
+		return $ecriture;
+	}
+	
+	private function analyserParametresEcriture($parametres) {
+		$this->pageNom = $parametres['wiki'];
+		$this->section = isset($parametres['section']) ? $parametres['section'] : null;
+	}
+	
+	private function verifierParametresEcriture($parametres) {
+			
+		$erreurs = array();
+		
+		if(!isset($parametres['texte'])) {
+			$message = "Le paramètre texte est obligatoire";
+			$erreurs[] = $message;
+		}
+		
+		if(!isset($parametres['wiki']) || trim($parametres['wiki']) == '') {
+			$message = "Le paramètre wiki est obligatoire";
+			$erreurs[] = $message;
+		}
+		
+		if (count($erreurs) > 0) {
+			$message = implode('<br />', $erreurs);
+			$code = RestServeur::HTTP_CODE_MAUVAISE_REQUETE;
+			throw new Exception($message, $code);
+		}
 	}
 	
 	private function convertirTexteWikiVersEncodageAppli($texte) {
