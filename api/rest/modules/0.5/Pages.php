@@ -231,9 +231,16 @@ class Pages extends Service {
 	}
 	
 	private function remplacerSection($titre_ou_numero_section, $section_remplacement, $corps) {
+		
+		//TODO: empecher l'insertion de section de niveau supérieur (avec plus de =)
+		// en les réduisant pour que le niveau de la section soit toujours inférieur à celui
+		// de la section éditée ? voir avec le PO !	
+		
+		//TODO: insérer un espace ou un saut de ligne à la fin du texte si celui-ci n'en contient pas 
+		// à la fin, ceci pour éviter que le formatage saute lors de l'édition du wiki
 		$section_page_originale = $this->decouperPageSection($corps, $titre_ou_numero_section);
 		$contenu = str_replace($section_page_originale, $section_remplacement, $corps);
-		
+			
 		return $contenu;
 	}
 	
