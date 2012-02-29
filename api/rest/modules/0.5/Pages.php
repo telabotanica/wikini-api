@@ -34,6 +34,7 @@ class Pages extends Service {
 			$this->analyserParametres($ressources, $parametres);
 			
 			$page = $this->consulterPage($this->pageNom, $this->section);
+			
 			if ($page == null) {
 				$message = 'La page demandée n\'existe pas';
 				$code = RestServeur::HTTP_CODE_RESSOURCE_INTROUVABLE;
@@ -63,12 +64,12 @@ class Pages extends Service {
 			}
 		}
 		
-		if(isset($parametres['txt_section_position']) && !is_numeric($parametres['txt_section_position'])) {
+		if (isset($parametres['txt_section_position']) && !is_numeric($parametres['txt_section_position'])) {
 			$message = "La valeur du paramètre 'txt.section.position' peut seulement prendre des valeurs numeriques";
 			$erreurs[] = $message;
 		}
 		
-		if(isset($parametres['txt_section_titre']) && trim($parametres['txt_section_titre']) == '') {
+		if (isset($parametres['txt_section_titre']) && trim($parametres['txt_section_titre']) == '') {
 			$message = "La valeur du paramètre 'txt.section.titre' ne peut pas être vide si celui-ci est présent";
 			$erreurs[] = $message;
 		}
@@ -82,10 +83,10 @@ class Pages extends Service {
 	
 	private function analyserParametres($ressources, $parametres) {	
 		$this->pageNom = $ressources[0];
-		if(isset($parametres['txt_section_titre'])) {
+		if (isset($parametres['txt_section_titre'])) {
 			$this->section = $parametres['txt_section_titre'];
 		}
-		if(isset($parametres['txt_section_position'])) {
+		if (isset($parametres['txt_section_position'])) {
 			$this->section = $parametres['txt_section_position'];
 		}
 		if (isset($parametres['txt_format'])) {
@@ -98,11 +99,10 @@ class Pages extends Service {
 		$this->wiki = Registre::get('wikiApi');
 		$this->wiki->setPageCourante($this->pageNom);
 		$page = $this->wiki->LoadPage($page);
-		
-		if($page != null) {
+				
+		if ($page != null) {
 			// attention les wikis sont souvent en ISO !
 			$page["body"] = $this->convertirTexteWikiVersEncodageAppli($page['body']);
-		
 			if($section != null) {
 				$page["body"] = $this->decouperPageSection($page["body"], $section);
 			}
@@ -114,13 +114,11 @@ class Pages extends Service {
 	private function decouperPageSection($contenu_page, $section) {
 	
 		$section_retour = '';
-	
-		if(is_numeric($section)) {
+		if (is_numeric($section)) {
 			$section_retour =  $this->getSectionParNumero($contenu_page, $section);
 		} else {
 			$section_retour =  $this->getSectionParTitre($contenu_page, $section);
 		}
-	
 		return $section_retour;
 	}
 	
@@ -131,13 +129,13 @@ class Pages extends Service {
 		$lg_page = strlen($page);
 		$fin_section = $lg_page;
 		
-		if($num <= count($sections[1]) && $num > 0) {	
+		if ($num <= count($sections[1]) && $num > 0) {	
 						
 			$debut_section = $sections[1][$num - 1][1];
 			$separateur = trim($sections[1][$num - 1][0]);
 			$separateur_trouve = false;
 						
-			for($i = $num; $i < count($sections[1]); $i++) {
+			for ($i = $num; $i < count($sections[1]); $i++) {
 				$fin_section = $sections[1][$i][1];
 				if($separateur == trim($sections[1][$i][0])) {
 					$separateur_trouve = true;
@@ -147,9 +145,10 @@ class Pages extends Service {
 			
 			$fin_section = $separateur_trouve ? $fin_section : $lg_page;
 			$sectionTxt = substr($page, $debut_section, $fin_section - $debut_section);
+			
 		} else {
 			$sectionTxt = '';
-		}	
+		}
 
 		return $sectionTxt;
 	}
@@ -158,11 +157,10 @@ class Pages extends Service {
 		$section = '';
 		$reg_exp = '/((=[=]+)[ ]*'.preg_quote(trim($titre), '/').'[ ]*=[=]+)[.]*/i';
 		$match = preg_split($reg_exp, $page, 2, PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY);
-		
-		if(count($match) > 3) {
+		if (count($match) > 3) {
 			$section = explode(trim($match[2]), $match[3], 2);
 			$section = $match[1].$section[0];
-		} elseif(count($match) == 2) {
+		} elseif (count($match) == 3) {
 			$section = explode(trim($match[1]), $match[2], 2);
 			$section = $match[0].$section[0];
 		} else {
@@ -177,7 +175,7 @@ class Pages extends Service {
 		$mime = null;
 		$texte = '';
 		
-		switch($this->retour) {
+		switch ($this->retour) {
 			case self::MIME_HTML:
 				$texte = $this->wiki->Format($page["body"], "wakka");
 				$mime = self::MIME_HTML;
@@ -203,23 +201,25 @@ class Pages extends Service {
 	}
 	
 	public function modifier($ressources, $requeteDonnees) {
-			
+
+		$requeteDonnees['pageTag'] = $ressources[0];
 		$this->verifierParametresEcriture($requeteDonnees);
 		$this->analyserParametresEcriture($requeteDonnees);
-		
 		$this->wiki = Registre::get('wikiApi');
 		$this->wiki->setPageCourante($this->pageNom);
 		
-		$texte = $requeteDonnees['texte'];
+		$texte = $requeteDonnees['pageContenu'];
 		$page = $this->consulterPage($this->pageNom);
 				
-		if($page != null) {
+		if ($page != null) {
 			$corps = ($this->section != null) ? $this->remplacerSection($this->section, $texte, $page['body']) : $texte;	
 		} else {
 			$corps = $texte;
 		}	
+		
 		$ecriture = $this->ecrirePage($this->pageNom, $corps);	
-		if($ecriture) {
+		
+		if ($ecriture) {
 			$this->envoyerCreationEffectuee();
 		} else {
 			$message = 'Impossible de créer ou modifier la page';
@@ -232,7 +232,7 @@ class Pages extends Service {
 	
 	private function remplacerSection($titre_ou_numero_section, $section_remplacement, $corps) {
 		$section_page_originale = $this->decouperPageSection($corps, $titre_ou_numero_section);
-		$contenu = str_replace($section_page_originale, $texte, $corps);
+		$contenu = str_replace($section_page_originale, $section_remplacement, $corps);
 		
 		return $contenu;
 	}
@@ -246,21 +246,21 @@ class Pages extends Service {
 	}
 	
 	private function analyserParametresEcriture($parametres) {
-		$this->pageNom = $parametres['wiki'];
-		$this->section = isset($parametres['section']) ? $parametres['section'] : null;
+		$this->pageNom = $parametres['pageTag'];
+		$this->section = isset($parametres['pageSection']) ? $parametres['pageSection'] : null;
 	}
 	
 	private function verifierParametresEcriture($parametres) {
 			
 		$erreurs = array();
 		
-		if(!isset($parametres['texte'])) {
-			$message = "Le paramètre texte est obligatoire";
+		if(!isset($parametres['pageContenu'])) {
+			$message = "Le paramètre pageContenu est obligatoire";
 			$erreurs[] = $message;
 		}
 		
-		if(!isset($parametres['wiki']) || trim($parametres['wiki']) == '') {
-			$message = "Le paramètre wiki est obligatoire";
+		if(!isset($parametres['pageTag']) || trim($parametres['pageTag']) == '') {
+			$message = "Le paramètre pageTag est obligatoire";
 			$erreurs[] = $message;
 		}
 		
