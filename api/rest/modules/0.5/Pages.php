@@ -20,7 +20,7 @@ class Pages extends Service {
 	private $creerPage = false;
 	private $templateDefaut = null;
 	
-	private $retour = 'txt';
+	private $retour = null;
 	private $formats_retour = array('text/plain','text/html');
 	private $format_texte;
 	
@@ -37,9 +37,6 @@ class Pages extends Service {
 			
 			$page = $this->consulterPage($this->pageNom, $this->section);
 			
-			// on devrait normalement renvoyer une erreur 404 mais 
-			// l'api de consultation d'url du framework prend mal en compte 
-			// le 404 et ne permet pas de le traiter quand on le recoit
 			if($page == null && $this->creerPage) {
 				$this->creerPageAPartirTemplate($this->pageNom, $this->templateDefaut);
 				$page = $this->consulterPage($this->pageNom, $this->section);
@@ -120,7 +117,6 @@ class Pages extends Service {
 		$page = $this->wiki->LoadPage($page);
 				
 		if ($page != null) {
-			// attention les wikis sont souvent en ISO !
 			$page["body"] = $this->convertirTexteWikiVersEncodageAppli($page['body']);
 			if($section != null) {
 				$page["body"] = $this->decouperPageSection($page["body"], $section);
