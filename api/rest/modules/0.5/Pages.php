@@ -17,6 +17,8 @@ class Pages extends Service {
 	private $wiki = null;
 	private $pageNom = null;
 	private $section = null;
+	private $creerPage = false;
+	private $templateDefaut = null;
 	
 	private $retour = 'txt';
 	private $formats_retour = array('text/plain','text/html');
@@ -38,7 +40,11 @@ class Pages extends Service {
 			// on devrait normalement renvoyer une erreur 404 mais 
 			// l'api de consultation d'url du framework prend mal en compte 
 			// le 404 et ne permet pas de le traiter quand on le recoit
-			$page['existe'] = ($page != null);
+			if($page == null && $this->creerPage) {
+				$this->creerPageAPartirTemplate($this->pageNom, $this->templateDefaut);
+				$page = $this->consulterPage($this->pageNom, $this->section);
+			}
+			
 			$retour = $this->formaterRetour($page);
 			
 			$this->envoyerContenuJson($retour);
@@ -72,6 +78,16 @@ class Pages extends Service {
 			$message = "La valeur du paramètre 'txt.section.titre' ne peut pas être vide si celui-ci est présent";
 			$erreurs[] = $message;
 		}
+		
+		if (isset($parametres['txt_section_titre']) && trim($parametres['txt_section_titre']) == '') {
+			$message = "La valeur du paramètre 'txt.section.titre' ne peut pas être vide si celui-ci est présent";
+			$erreurs[] = $message;
+		}
+		
+		if (isset($parametres['txt_template']) && trim($parametres['txt_template']) == '') {
+			$message = "La valeur du paramètre 'txt_template' ne peut pas être vide si celui-ci est présent";
+			$erreurs[] = $message;
+		}
 				
 		if (count($erreurs) > 0) {
 			$message = implode('<br />', $erreurs);
@@ -90,6 +106,10 @@ class Pages extends Service {
 		}
 		if (isset($parametres['txt_format'])) {
 			$this->retour = $parametres['txt_format'];
+		}
+		if (isset($parametres['txt_template'])) {
+			$this->creerPage = true;
+			$this->templateDefaut = $parametres['txt_template'];
 		}
 	}
 	
@@ -191,10 +211,18 @@ class Pages extends Service {
 				'titre' => $this->pageNom,
 				'mime' => $mime,
 				'texte' => $texte,
-				'href' => $url,
-				'existe' => $page['existe']);
+				'href' => $url);
 		
 		return $retour;
+	}
+	
+	private function creerPageAPartirTemplate($tag_page_a_creer, $tag_template) {
+		$page_template = $this->consulterPage($tag_template);
+		$corps_nouvelle_page = ($page_template != null) ? $page_template['body'] : '';
+		// si le template n'existe pas, la page créée sera vide
+		$ecriture = $this->ecrirePage($tag_page_a_creer, $corps_nouvelle_page);	
+		
+		return $ecriture;
 	}
 	
 	public function ajouter($ressources, $requeteDonnees) {
@@ -260,6 +288,8 @@ class Pages extends Service {
 	
 	private function remplacerSection($titre_section, $section_remplacement, $corps) {
 				
+		// insertion d'un saut de ligne pour empêcher de casser le titre, lorsque le titre
+		// suivant vient directement après la section, sans saut de ligne ni espace
 		$section_remplacement = "\n".$section_remplacement."\n";
 		$section_page_originale = $this->getSectionParTitre($corps, $titre_section, true);
 		$infos_section = $this->getInformationsPositionSection($titre_section, $corps);
@@ -287,17 +317,17 @@ class Pages extends Service {
 			
 		$erreurs = array();
 		
-		if(!isset($parametres['pageContenu'])) {
+		if (!isset($parametres['pageContenu'])) {
 			$message = "Le paramètre pageContenu est obligatoire";
 			$erreurs[] = $message;
 		}
 		
-		if(!isset($parametres['pageTag']) || trim($parametres['pageTag']) == '') {
+		if (!isset($parametres['pageTag']) || trim($parametres['pageTag']) == '') {
 			$message = "Le paramètre pageTag est obligatoire";
 			$erreurs[] = $message;
 		}
 		
-		if(isset($parametres['pageSectionTitre']) && $parametres['pageSectionTitre'] == '') {
+		if (isset($parametres['pageSectionTitre']) && $parametres['pageSectionTitre'] == '') {
 			$message = "Le paramètre pageSectionTitre ne doit pas être vide s'il est présent";
 			$erreurs[] = $message;
 		}
@@ -310,14 +340,14 @@ class Pages extends Service {
 	}
 	
 	private function convertirTexteWikiVersEncodageAppli($texte) {
-		if(Config::get('encodage_appli') != Config::get('encodage_wiki')) {
+		if (Config::get('encodage_appli') != Config::get('encodage_wiki')) {
 			$texte = mb_convert_encoding($texte,Config::get('encodage_appli'),Config::get('encodage_wiki'));
 		}
 		return $texte;
 	}
 	
 	private function convertirTexteAppliVersEncodageWiki($texte) {
-		if(Config::get('encodage_appli') != Config::get('encodage_wiki')) {
+		if (Config::get('encodage_appli') != Config::get('encodage_wiki')) {
 			$texte = mb_convert_encoding($texte,Config::get('encodage_wiki'),Config::get('encodage_appli'));
 		}
 		return $texte;
