@@ -35,11 +35,10 @@ class Pages extends Service {
 			
 			$page = $this->consulterPage($this->pageNom, $this->section);
 			
-			if ($page == null) {
-				$message = 'La page demandée n\'existe pas';
-				$code = RestServeur::HTTP_CODE_RESSOURCE_INTROUVABLE;
-				throw new Exception($message, $code);
-			}
+			// on devrait normalement renvoyer une erreur 404 mais 
+			// l'api de consultation d'url du framework prend mal en compte 
+			// le 404 et ne permet pas de le traiter quand on le recoit
+			$page['existe'] = ($page != null);
 			$retour = $this->formaterRetour($page);
 			
 			$this->envoyerContenuJson($retour);
@@ -112,12 +111,11 @@ class Pages extends Service {
 	}
 	
 	private function decouperPageSection($contenu_page, $section) {
-	
 		$section_retour = '';
 		if (is_numeric($section)) {
 			$section_retour =  $this->getSectionParNumero($contenu_page, $section);
 		} else {
-			$section_retour =  $this->getSectionParTitre($contenu_page, $section);
+			$section_retour =  $this->getSectionParTitre($contenu_page, $section, false);
 		}
 		return $section_retour;
 	}
@@ -153,16 +151,18 @@ class Pages extends Service {
 		return $sectionTxt;
 	}
 	
-	public function getSectionParTitre($page, $titre) {
+	public function getSectionParTitre($page, $titre, $inclure_titre = false) {
 		$section = '';
 		$reg_exp = '/((=[=]+)[ ]*'.preg_quote(trim($titre), '/').'[ ]*=[=]+)[.]*/i';
 		$match = preg_split($reg_exp, $page, 2, PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY);
 		if (count($match) > 3) {
 			$section = explode(trim($match[2]), $match[3], 2);
-			$section = $match[1].$section[0];
+			$section = $section[0];
+			$section = ($inclure_titre) ? $match[1].$section : $section;
 		} elseif (count($match) == 3) {
 			$section = explode(trim($match[1]), $match[2], 2);
-			$section = $match[0].$section[0];
+			$section = $section[0];
+			$section = ($inclure_titre) ? $match[0].$section : $section;
 		} else {
 			$section = "";
 		}
@@ -191,7 +191,8 @@ class Pages extends Service {
 				'titre' => $this->pageNom,
 				'mime' => $mime,
 				'texte' => $texte,
-				'href' => $url);
+				'href' => $url,
+				'existe' => $page['existe']);
 		
 		return $retour;
 	}
@@ -230,18 +231,43 @@ class Pages extends Service {
 		return $ecriture;
 	}
 	
-	private function remplacerSection($titre_ou_numero_section, $section_remplacement, $corps) {
+	/**
+	 * 
+	 * Si la section demandée existe dans la page, renvoie un tableau contenant le numéro de caractère de 
+	 * début de la section, après son titre, ainsi que la longeur du titre
+	 * @param string $titre de la section
+	 * @param string $page contenu de la page wiki
+	 * @return tableau associatif tel que décrit ici
+	 */
+	private function getInformationsPositionSection($titre, $page) {
 		
-		//TODO: empecher l'insertion de section de niveau supérieur (avec plus de =)
-		// en les réduisant pour que le niveau de la section soit toujours inférieur à celui
-		// de la section éditée ? voir avec le PO !	
+		preg_match_all('/(=[=]+[ ]*'.preg_quote(trim($titre), '/').'[ ]*=[=]+[.]*)/i', $page, $sections, PREG_OFFSET_CAPTURE);
+		$longueur_titre = 0;
+		$debut_section_apres_titre = 0;
 		
-		//TODO: insérer un espace ou un saut de ligne à la fin du texte si celui-ci n'en contient pas 
-		// à la fin, ceci pour éviter que le formatage saute lors de l'édition du wiki
-		$section_page_originale = $this->decouperPageSection($corps, $titre_ou_numero_section);
-		$contenu = str_replace($section_page_originale, $section_remplacement, $corps);
+		if (count($sections) > 0 && is_array($sections[0]) && count($sections[0][0]) >= 2) {
+			$longueur_titre = mb_strlen($sections[0][0][0]);
+			$debut_section_apres_titre = $sections[0][0][1] + $longueur_titre;
+		}
+		
+		// ATTENTION : début contient le numéro du caractere de début de la section, après le titre
+		$infos = array('debut' => $debut_section_apres_titre,
+						'longueur_titre' => $longueur_titre
+				);
+		
+		return $infos;
+	}
+	
+	private function remplacerSection($titre_section, $section_remplacement, $corps) {
+				
+		$section_remplacement = "\n".$section_remplacement."\n";
+		$section_page_originale = $this->getSectionParTitre($corps, $titre_section, true);
+		$infos_section = $this->getInformationsPositionSection($titre_section, $corps);
+		$nb_caracteres_a_remplacer = mb_strlen($section_page_originale) - $infos_section['longueur_titre'];
+		
+		$nouveau_contenu = substr_replace($corps, $section_remplacement, $infos_section['debut'], $nb_caracteres_a_remplacer);
 			
-		return $contenu;
+		return $nouveau_contenu;
 	}
 	
 	private function ecrirePage($nom_page, $contenu) {
@@ -254,7 +280,7 @@ class Pages extends Service {
 	
 	private function analyserParametresEcriture($parametres) {
 		$this->pageNom = $parametres['pageTag'];
-		$this->section = isset($parametres['pageSection']) ? $parametres['pageSection'] : null;
+		$this->section = isset($parametres['pageSectionTitre']) ? $parametres['pageSectionTitre'] : null;
 	}
 	
 	private function verifierParametresEcriture($parametres) {
@@ -268,6 +294,11 @@ class Pages extends Service {
 		
 		if(!isset($parametres['pageTag']) || trim($parametres['pageTag']) == '') {
 			$message = "Le paramètre pageTag est obligatoire";
+			$erreurs[] = $message;
+		}
+		
+		if(isset($parametres['pageSectionTitre']) && $parametres['pageSectionTitre'] == '') {
+			$message = "Le paramètre pageSectionTitre ne doit pas être vide s'il est présent";
 			$erreurs[] = $message;
 		}
 		
