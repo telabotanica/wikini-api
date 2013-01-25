@@ -111,18 +111,20 @@ class Pages extends Service {
 	}
 	
 	private function consulterPage($page, $section = null) {
-		
 		$this->wiki = Registre::get('wikiApi');
+		// La variable globale wiki est déclarée par les wiki et leurs plugins
+		// un bug lié à certains plugin impose de la redéclarer et la réaffecter
+		global $wiki;
+		$wiki = $this->wiki;
 		$this->wiki->setPageCourante($this->pageNom);
 		$page = $this->wiki->LoadPage($page);
-				
+		
 		if ($page != null) {
 			$page["body"] = $this->convertirTexteWikiVersEncodageAppli($page['body']);
 			if($section != null) {
 				$page["body"] = $this->decouperPageSection($page["body"], $section);
 			}
-		}
-	
+		}	
 		return $page;
 	}
 	
