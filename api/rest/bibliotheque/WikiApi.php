@@ -14,10 +14,10 @@ class WikiApi {
 	private function initialiser() {
 		if ($this->page != null) {
         	$_REQUEST['wiki'] = $this->page;
-        }
+		}
 		
-		ini_set('include_path',ini_get('include_path').':'.$this->cheminWiki.':');
-		chdir($this->cheminWiki);
+	ini_set('include_path',ini_get('include_path').':'.$this->cheminWiki.':');
+	chdir($this->cheminWiki);
         include 'api.php';
         $this->wikiObjet = $wiki;
         chdir($this->cheminApi);
