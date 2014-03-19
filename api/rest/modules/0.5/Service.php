@@ -1,6 +1,6 @@
 <?php
 abstract class Service extends RestService {
-	
+
 	//+----------------------------------------------------------------------------------------------------------------+
 	// GESTION de l'ENVOIE au NAVIGATEUR
 
@@ -16,14 +16,14 @@ abstract class Service extends RestService {
 			header("Content-Type: $mime");
 		}
 	}
-	
+
 	public function envoyerContenuJson($donnees = null, $encodage = 'utf-8') {
 		$contenu = json_encode($donnees);
 		$this->envoyerEnteteContenu($encodage, 'application/json');
 		echo $contenu;
 		exit;
 	}
-		
+
 	protected function envoyerAuth($message_accueil, $message_echec) {
 		header('HTTP/1.0 401 Unauthorized');
 		header('WWW-Authenticate: Basic realm="'.mb_convert_encoding($message_accueil, 'ISO-8859-1', 'UTF-8').'"');
@@ -31,12 +31,12 @@ abstract class Service extends RestService {
 		print $message_echec;
 		exit(0);
 	}
-	
+
 	protected function envoyerErreur($e) {
 		RestServeur::envoyerEnteteStatutHttp($e->getCode());
 		echo $e->getMessage();
 	}
-	
+
 	protected function envoyerCreationEffectuee() {
 		header('HTTP/1.1 201 Created');
 		echo "OK";

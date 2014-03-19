@@ -1,0 +1,7 @@
+** Retour : ** [[PagePrincipale Page principale]] > [[TableauDeBord Tableau de bord]]
+----
+====== Les pages archivées de ce Wikini ======
+
+Pour archiver une page dans ce wikini, supprimer les liens qui mènent vers elle puis rajouter le tag "PageArchive" dans son contenu.
+
+{{TextSearch phrase="PageArchive"}}

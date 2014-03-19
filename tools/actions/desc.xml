@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<plugin name="actions" version="0.1" active="1">
+  <author>Jean-Pascal MILCENT</author>
+  <label>Actions supplementaires ou de rempalcement</label>
+  <desc>Plugin fournissant de nouvelles actions a Wikini.</desc>
+</plugin>

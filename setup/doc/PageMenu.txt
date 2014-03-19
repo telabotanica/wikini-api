@@ -1,0 +1,8 @@
+ - ""<a href="wakka.php?wiki=""{{configuration param="root_page"}}""" title="Aller sur la page d'accueil">Accueil</a>""
+----
+ - === Pages utiles ===
+  - ""<a href="wakka.php?wiki=PageMenu/edit">Éditer ce menu</a>""
+  - [[ReglesDeFormatage Règles de formatage]]
+  - [[PageArchive Archives de ce wikini]]
+  - [[PageARetravailler Page à revoir, à completer, à supprimer...]]
+  - [[BacASable Bac à sable]]

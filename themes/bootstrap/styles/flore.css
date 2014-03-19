@@ -1,0 +1,84 @@
+*[lang]:after {
+	content:" ("attr(lang)")";
+	color:#888;
+	background-color:inherit;
+	font-style:italic;
+	size:80%;}
+strong[class]:hover,em[class]:hover,abr[class]:hover,span:hover{
+	background-color:white;
+	display:block-inline;
+	cursor:crosshair;
+	font-style:normal !important;}
+strong[class]:hover:before,em[class]:hover:before,abr[class]:hover:before,span:hover:before{
+	content:"[";
+	font-weight:bold;}
+strong[class]:hover:after,em[class]:hover:after,abr[class]:hover:after,span:hover:after{
+	content:"]->"attr(class);
+	font-weight:bold;
+	font-style:normal !important;
+	color:black;}
+
+/* Mise en forme similaire au texte d'origine */
+.petite-majuscule{
+	font-variant:small-caps;}
+
+/* Zones d'informations générales */
+.txt-original{
+	width:350px;
+	text-align:justify;
+	white-space:pre-wrap;
+	line-height:1.6em;
+	font-size:1em;}
+.txt-original:before{
+	content:"Texte original : ";}
+.source:before{
+	content:"Source : ";}
+
+
+/* TODO : trouver des correspondances avec les ontologies du TDWG */
+.nn{
+	font-weight:bold;}
+.nom-vernaculaire{
+	background-color:#d9ffb2;
+	border:0.1em solid #d9ffb2;}
+.utilisation{
+	background-color:#d9b2ff;
+	border:0.1em solid #d9b2ff;}
+.floraison{
+	background-color:#b2e3ff;
+	border:0.1em solid #b2e3ff;}
+
+
+/* TaxonName Ontologie TDWG */
+.taxonName{
+	background-color:#ffecb2;
+	border:0.1em solid #ffecb2;}
+.uninomial, .genusPart, .infragenericEpithet, .specificEpithet, .infraspecificEpithet {
+	font-style:italic;}
+.taxonName .publicationCitation{
+	border:0.1em dotted #ffecb2;}
+
+/* SPMInfoItems Ontologie TDWG */
+.description{
+	background-color:#ffcfb2;
+	border:0.1em solid #ffcfb2;}
+.habitat{
+	background-color:#f5b2ff;
+	border:0.1em solid #f5b2ff;}
+.distribution{
+	background-color:#ccf;
+	border:0.1em solid #ccf;}
+
+/* PublicationCitation Ontologie TDWG */
+.publicationCitation{
+	background-color:#f6ffb2;
+	border:0.1em solid #f6ffb2;}
+/* PublicationCitation : autorship */
+.publicationCitation .authorship{
+	}
+/* PublicationCitation : short title */
+.publicationCitation .shortTitle{
+	font-style:italic;}
+/* PublicationCitation : pages */
+.publicationCitation .pages{
+}

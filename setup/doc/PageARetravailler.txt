@@ -1,0 +1,13 @@
+ ** Retour : ** [[PagePrincipale Page principale]] > [[TableauDeBord Tableau de bord]]
+----
+====== Les pages à revoir et à compléter de ce Wikini ======
+
+Nous utilisons cette page pour lister les pages à retravailler. Le développement d'un wiki est si facile et si rapide qu'on peut aisément oublier des pages en friche, demandant à être complétées, réorganisées ou légèrement retravaillées.
+Cette page se propose de centraliser toutes les pages nécessitant un travail ultérieur.
+
+Pour cela l'éditeur aura soin de mentionner un des termes présent dans la liste ci-dessous dans la page qu'il édite. 
+Les page à retravailler seront automatiquement recensées par cette page. 
+
+{{TextSearch phrase="Asupprimer"}}
+{{TextSearch phrase="Arevoir"}}
+{{TextSearch phrase="Acompleter"}}
