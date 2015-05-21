@@ -39,7 +39,7 @@ class MigrationSmartFlore extends Script {
 		$nouvelles_sections = array(
 				"Description" => array("Introduction","Comment la reconnaître ?","Son histoire"),
 				"Usages" => array("Ses usages", "Ce qu'il faut savoir..."),
-				"Écologie % habitat" => array("Écologie & habitat"),
+				"Écologie & habitat" => array("Écologie & habitat"),
 				"Sources" => array("Sources")
 		);
 		
