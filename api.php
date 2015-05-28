@@ -1721,33 +1721,6 @@ unset($CookiePath);
 // start session
 session_start();
 
-// fetch wakka location
-if (empty($_REQUEST['wiki']))
-{
-	// redirect to the root page
-	header('Location: ' . $wakkaConfig['base_url'] . $wakkaConfig['root_page']);
-	exit;
-}
-$wiki = $_REQUEST['wiki'];
-
-// remove leading slash
-$wiki = preg_replace("/^\//", "", $wiki);
-
-// split into page/method, checking wiki name & method name (XSS proof)
-if (preg_match('`^' . WN_TAG_HANDLER_CAPTURE . '$`', $wiki, $matches))
-{
-	list(, $page, $method) = $matches;
-}
-elseif (preg_match('`^' . WN_PAGE_TAG . '$`', $wiki))
-{
-	$page = $wiki;
-}
-else
-{
-	echo "<p>Le nom de la page est incorrect.</p>";
-	exit;
-}
-
 // create wiki object
 $wiki = new Wiki($wakkaConfig);
 // check for database access
