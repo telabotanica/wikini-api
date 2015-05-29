@@ -99,7 +99,7 @@ class ManipulationPage {
 	
 	public function getSectionParTitre($page, $titre, $inclure_titre = false) {
 		$section = '';
-		$reg_exp = '/((=[=]+)[ ]*'.preg_quote(trim($titre), '/').'[ ]*=[=]+)[.]*/i';
+		$reg_exp = '/((=[=]+)[ ]*'. trim($titre) .'[ ]*=[=]+)[.]*/i';
 		$match = preg_split($reg_exp, $page, 2, PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY);
 		if (count($match) > 3) {
 			$section = explode(trim($match[2]), $match[3], 2);

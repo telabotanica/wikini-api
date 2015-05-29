@@ -35,12 +35,13 @@ class MigrationSmartFlore extends Script {
 	
 	protected function migrerFormatSmartFlore() {	
 
-		$sections = array("Fiche simplifiée Smart'flore", "Introduction","Comment la reconnaître ?","Son histoire","Ses usages","Écologie & habitat","Ce qu'il faut savoir...","Sources");
+		// sections "souples" - attention, ne seront pas "quotées" mais interprétées comme morceaux de regexp directement !
+		$sections = array("Fiche simplifi.+e Smart.+flore", "Introduction","Comment la reconna.+tre.+","Son histoire","Ses usages",".+(?:cologie|habitat).+","Ce qu.+il faut savoir.+","Sources");
 		$nouvelles_sections = array(
-				"Description" => array("Introduction","Comment la reconnaître ?","Son histoire"),
-				"Usages" => array("Ses usages", "Ce qu'il faut savoir..."),
-				"Écologie & habitat" => array("Écologie & habitat"),
-				"Sources" => array("Sources")
+			"Description" => array("Introduction","Comment la reconna.+tre.+","Son histoire"),
+			"Usages" => array("Ses usages", "Ce qu.+il faut savoir.+"),
+			"Écologie & habitat" => array(".+(?:cologie|habitat).+"), // groupe non-capturant avec (?:a|b)
+			"Sources" => array("Sources")
 		);
 		
 		$where_section = 'body NOT LIKE "';
