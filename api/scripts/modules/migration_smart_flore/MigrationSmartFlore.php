@@ -36,11 +36,11 @@ class MigrationSmartFlore extends Script {
 	protected function migrerFormatSmartFlore() {	
 
 		// sections "souples" - attention, ne seront pas "quotées" mais interprétées comme morceaux de regexp directement !
-		$sections = array("Fiche simplifi.+e Smart.+flore", "Introduction","Comment la reconna.+tre.+","Son histoire","Ses usages",".+cologie.+habitat","Ce qu.+il faut savoir.+","Sources");
+		$sections = array("Fiche simplifi.+e Smart.+flore", "Introduction","Comment la reconna.+tre.+","Son histoire","Ses usages",".+(?:cologie|habitat).+","Ce qu.+il faut savoir.+","Sources");
 		$nouvelles_sections = array(
 			"Description" => array("Introduction","Comment la reconna.+tre.+","Son histoire"),
 			"Usages" => array("Ses usages", "Ce qu.+il faut savoir.+"),
-			"Écologie & habitat" => array(".+cologie.+habitat"),
+			"Écologie & habitat" => array(".+(?:cologie|habitat).+"), // groupe non-capturant avec (?:a|b)
 			"Sources" => array("Sources")
 		);
 		
