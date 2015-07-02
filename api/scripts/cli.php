@@ -35,7 +35,8 @@ if (!file_exists($framework)) {
 	// Création de l'objet Wiki qui sera transmis au service via le Registre
 	Registre::set('cheminApi', getcwd());
 	Registre::set('cheminWiki', realpath(dirname(__FILE__).DS.'..'.DS.'..'.DS).DS);
-	//require_once(getcwd().DS.'bibliotheque'.DS.'WikiApi.php');
+	
+	require_once(getcwd().DS.'..'.DS.'bibliotheque'.DS.'WikiApi.php');
 	$wikiApi = new WikiApi(Registre::get('cheminWiki'), Registre::get('cheminApi'));
 	Registre::set('wikiApi', $wikiApi);
 

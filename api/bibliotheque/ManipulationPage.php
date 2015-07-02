@@ -13,8 +13,6 @@
  */
 class ManipulationPage {
 	
-	// C'est dommage cette classe fait doublon avec la classe contenue dans le dossier rest
-	// il faudrait faire une factorisation de tout ça 
 	private $wiki = null;
 	private $pageNom = null;
 	private $section = null;
@@ -32,8 +30,9 @@ class ManipulationPage {
 	}
 	
 	public function consulterPage($page, $section = null) {
+		$this->wiki->setPageCourante($page);
 		$page = $this->wiki->LoadPage($page);
-				
+		
 		if ($page != null) {
 			$this->consulterPageSectionsFormatees($page, $section);
 		}
@@ -99,7 +98,7 @@ class ManipulationPage {
 	
 	public function getSectionParTitre($page, $titre, $inclure_titre = false) {
 		$section = '';
-		$reg_exp = '/((=[=]+)[ ]*'. trim($titre) .'[ ]*=[=]+)[.]*/i';
+		$reg_exp = '/((=[=]+)[ ]*'.preg_quote(trim($titre), '/').'[ ]*=[=]+)[.]*/i';
 		$match = preg_split($reg_exp, $page, 2, PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY);
 		if (count($match) > 3) {
 			$section = explode(trim($match[2]), $match[3], 2);
@@ -116,7 +115,7 @@ class ManipulationPage {
 		return $section;
 	}
 	
-	private function creerPageAPartirTemplate($tag_page_a_creer, $tag_template) {
+	public function creerPageAPartirTemplate($tag_page_a_creer, $tag_template) {
 		$page_template = $this->consulterPage($tag_template);
 		$corps_nouvelle_page = ($page_template != null) ? $page_template['body'] : '';
 		// si le template n'existe pas, la page créée sera vide
@@ -133,7 +132,7 @@ class ManipulationPage {
 	 * @param string $page contenu de la page wiki
 	 * @return tableau associatif tel que décrit ici
 	 */
-	private function getInformationsPositionSection($titre, $page) {
+	public function getInformationsPositionSection($titre, $page) {
 		
 		preg_match_all('/(=[=]+[ ]*'.preg_quote(trim($titre), '/').'[ ]*=[=]+[.]*)/i', $page, $sections, PREG_OFFSET_CAPTURE);
 		$longueur_titre = 0;
@@ -152,7 +151,7 @@ class ManipulationPage {
 		return $infos;
 	}
 	
-	private function remplacerSection($titre_section, $section_remplacement, $corps) {
+	public function remplacerSection($titre_section, $section_remplacement, $corps) {
 				
 		// insertion d'un saut de ligne pour empêcher de casser le titre, lorsque le titre
 		// suivant vient directement après la section, sans saut de ligne ni espace
@@ -170,6 +169,10 @@ class ManipulationPage {
 		
 		$texte_encode = $this->convertirTexteAppliVersEncodageWiki($contenu);
 		$ecriture = $this->wiki->SavePage($nom_page, $texte_encode, "", true);
+		
+		// 0 signifie écriture réussie et 1 pas autorisé (donc échec)
+		// on ramène donc ça à une valeur de true/false
+		$ecriture = ($ecriture == 0) ? true : false;
 		
 		return $ecriture;
 	}
