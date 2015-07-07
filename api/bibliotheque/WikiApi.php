@@ -2,7 +2,7 @@
 class WikiApi {
 	
 	private $page = null;
-	private $wikiObjet = null;
+	public $wikiObjet = null;
 	private $cheminWiki = null;
 	private $cheminApi = null;
 	

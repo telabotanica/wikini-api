@@ -6,10 +6,13 @@ class identificationSso {
 
 	private $cookie_tentative_identification = "";
 	private $delai_tentative_identification = 60;
+	
+	private $auth_header = 'Authorization';
 
 	public function __construct($wiki) {
 		$this->wiki = $wiki;
 		$this->config = $wiki->config;
+		$this->auth_header = !empty($this->config['sso_auth_header']) ? $this->config['sso_auth_header'] : $this->auth_header;
 		$this->cookie_tentative_identification = 'wikini_sso_tentative_identification';
 	}
 
@@ -17,6 +20,12 @@ class identificationSso {
 		// Premier essai, dans le header
 		$headers = @apache_request_headers();
 		$token = !empty($headers['Authorization']) ? $headers['Authorization'] : null;
+		// Eventuellement, le jeton a pu être passé dans un header non standard, comme dans 
+		// le cas où le header Authorization est supprimé par le mod cgi d'apache
+		// Dans ce cas là on vérifie aussi dans un header alternatif si celui ci a été renseigné
+		if($token == null && $this->auth_header != 'Authorization') {
+			$token = !empty($headers[$this->auth_header]) ? $headers[$this->auth_header] : null;
+		}
 
 		// Sinon dans $_REQUEST ?
 		if($token == null) {
@@ -138,6 +147,16 @@ class identificationSso {
 		}
 	}
 
+	function recupererIdentiteConnecteePourApi() {		
+		$token = $this->getToken();
+		if($token != null) {
+			// On demande à l'annuaire si le jeton est bien valide
+			$jeton_rafraichi = json_decode(file_get_contents($this->wiki->config['sso_url'].'rafraichir?token='.$token), true);
+			$nom_wiki = $this->verifierEtInsererUtilisateurParJeton($jeton_rafraichi);
+			$token_decode = $this->decoderToken($jeton_rafraichi['token']);
+			$this->wiki->SetUser($this->wiki->LoadUser($nom_wiki));
+		}
+	}
 
 	function connecterUtilisateur($login, $pass, $url_redirect = null) {
 		if(strpos($login, '@') === false) {

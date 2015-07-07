@@ -39,6 +39,12 @@ class Pages extends Service {
 		global $wiki;
 		$wiki = $this->wiki;
 		
+		// C'est moche mais normalement déterministe comme chemin de fichier
+		require_once realpath(dirname(__FILE__).'/../../../../tools/login/libs/identificationsso.class.php');
+		// Attention la classe de sso s'instancie avec le vrai objet wiki contenu dans wikiApi
+		$identification = new IdentificationSso($this->wiki->wikiObjet);
+		$identification->recupererIdentiteConnecteePourApi();
+		
 		require_once realpath(dirname(__FILE__).'/../../../bibliotheque/ManipulationPage.php');
 		$this->manipulationPage = new ManipulationPage($this->wiki, $this->pageNom);
 	}
