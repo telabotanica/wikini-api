@@ -1,0 +1,5 @@
+Pour activer l'api rest et les scripts pour wikini :
+- Renommer framework.defaut.php en framework.php à la racine de /scripts et de /rest et renseigner le chemin vers le framework (version 0.3)
+- Renommer config.defaut.ini en config.ini dands /scripts/configurations/ et de /rest/configurations/
+- Dans le cas de /rest/configurations/config.ini modifier les variables "serveur.baseURL" et "serveur.baseAlternativeURL" pour qu'elles correspondent 
+à l'emplacement de l'api du wiki relative au serveur (généralement /monWiki/Api/rest/)
