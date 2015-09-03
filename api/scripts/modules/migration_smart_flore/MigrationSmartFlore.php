@@ -81,8 +81,9 @@ class MigrationSmartFlore extends Script {
 					'(resource, property, value) VALUES ';
 		
 		foreach($sentiers as $sentier) {
-			
+
 			list($tag, $titre) = explode(' ', $sentier, 2);
+			$titre = trim($titre);
 			// Reconversion dans l'encodage du wiki pour l'insertion
 			$titre_encode_wiki = mb_convert_encoding($titre, Config::get('encodage_wiki'), Config::get('encodage_appli'));
 			
@@ -105,7 +106,7 @@ class MigrationSmartFlore extends Script {
 			}
 		}
 		
-		$valeurs_a_inserer = $valeurs_sentiers_a_inserer + $valeurs_fiches_a_associer;
+		$valeurs_a_inserer = array_merge($valeurs_sentiers_a_inserer, $valeurs_fiches_a_associer);
 		$requete_insertion .= implode(', '."\n", $valeurs_a_inserer);
 		// Tout est contenu dans la table triple du wiki, donc une seule requête suffit pour tout insérer
 		$this->wiki->Query($requete_insertion);
