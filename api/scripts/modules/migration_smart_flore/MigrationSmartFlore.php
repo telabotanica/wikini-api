@@ -14,23 +14,104 @@ class MigrationSmartFlore extends Script {
 
 	protected $mode_verbeux = false;
 	
-	// Paramêtres autorisées lors de l'appel au script en ligne de commande
-	protected $parametres_autorises = array(
-			'-n' => array(true, true, 'Nom du fichier ou du dossier à traiter'));
-	
 	public function executer() {
-		// L'obligation de mettre un paramètre -a donnée par le framework
-		// n'a pas de sens, ça ne doit pas être obligatoire !!!
 		$cmd = $this->getParametre('a');
 		$this->mode_verbeux = $this->getParametre('v');
 		
 		switch($cmd) {
-			case 'tous' :
+			case 'migrerFormatSmartFlore' :
 				$this->migrerFormatSmartFlore();
+			break;
+			
+			case 'migrerSentiersSmartFlore' :
+				$this->migrerSentiersSmartFlore();
 			break;
 			
 			default:
 		}
+	}
+	
+	protected function migrerSentiersSmartFlore() {
+		$this->wiki = Registre::get('wikiApi');
+		$requete = 'SELECT * FROM '.$this->wiki->GetConfigValue('table_prefix').'pages WHERE latest = "Y" '.
+				'AND tag = "AccesProjet" ';
+				
+		$page_sentiers = $this->wiki->LoadSingle($requete);
+		// Attention les wiki sont en iso Argh%#[{!?
+		// Il faut convertir car sinon certains sentiers ne matcheront pas à leur propriétaire
+		$page_sentiers['body'] = mb_convert_encoding($page_sentiers['body'], Config::get('encodage_appli'), Config::get('encodage_wiki'));
+		preg_match_all("|\[\[([^\]\]]*)\]\]|", $page_sentiers['body'], $sentiers, PREG_PATTERN_ORDER);
+		
+		// Seule une partie du tableau contenant les noms des sentiers nous interesse
+		$sentiers = $sentiers[1];
+		
+		echo "Nombre de sentiers à migrer : ".count($sentiers)."\n";
+		
+		$valeurs_sentiers_a_inserer = array();
+		
+		$proprietaires_sentiers = array();
+		// Chargement du fichier contenant les propriétaires à associer aux sentiers
+		$fichier = file(realpath(dirname(__FILE__)).'/proprietaires_sentiers.csv');
+		
+		foreach ($fichier as $ligne) {
+			$data = str_getcsv($ligne);
+			if($data[2] != "") {
+				// on associe un titre de sentier à un email (la clé est le titre de sentier)
+				$proprietaires_sentiers[trim($data[0])] = trim($data[2]);
+			}		
+		}
+		
+		$courriel_proprietaires = array_values(array_unique($proprietaires_sentiers));	
+		// Chargement des infos des utilisateurs pour obtenirs leurs nomWikis associés
+		$url_infos_courriels = 	Config::get('annuaire_infos_courriels_url').implode(',', $courriel_proprietaires);
+		$infos_proprietaires = json_decode(file_get_contents($url_infos_courriels), true);
+		
+		$infos_proprietaires_a_sentier = array();
+		
+		foreach($proprietaires_sentiers as $nom_sentier => $proprietaire_sentier) {
+			if(isset($infos_proprietaires[$proprietaire_sentier])) {
+				$infos_proprietaires_a_sentier[$nom_sentier] = $infos_proprietaires[$proprietaire_sentier]['nomWiki'];
+			} else {
+				// les sentiers sans propriétaires sont affectés au compte accueil
+				$infos_proprietaires_a_sentier[$nom_sentier] = "AssociationTelaBotanica";
+			}
+		}
+		
+		$requete_insertion = 'INSERT INTO '.$this->wiki->GetConfigValue('table_prefix').'triples '.
+					'(resource, property, value) VALUES ';
+		
+		foreach($sentiers as $sentier) {
+			
+			list($tag, $titre) = explode(' ', $sentier, 2);
+			// Reconversion dans l'encodage du wiki pour l'insertion
+			$titre_encode_wiki = mb_convert_encoding($titre, Config::get('encodage_wiki'), Config::get('encodage_appli'));
+			
+			$requete = 'SELECT * FROM '.$this->wiki->GetConfigValue('table_prefix').'pages WHERE latest = "Y" '.
+					'AND tag = "'.$tag.'" ';
+			
+			$infos_sentier = $this->wiki->LoadSingle($requete);
+		
+			$proprietaire = !empty($infos_proprietaires_a_sentier[$titre]) ? $infos_proprietaires_a_sentier[$titre] : "AssociationTelaBotanica";
+			$valeurs_sentiers_a_inserer[] = "('".addslashes(trim($titre_encode_wiki))."', 'smartFlore.sentiers', '".$proprietaire."')";
+			
+			// Recherche de toutes les fiches contenues dans le sentier (normalement sous forme de liens vers des fiches de type 
+			// SmartFloreYYYntZZZ où YYY est un code de référentiel et ZZZ un numéro taxonomique)
+			preg_match_all("|\[\[(SmartFlore[^(?:nt)]*nt[0-9]*)|", $infos_sentier['body'], $fiches_du_sentier, PREG_PATTERN_ORDER);
+			
+			if(!empty($fiches_du_sentier[0])) {
+				foreach($fiches_du_sentier[1] as $fiche_du_sentier) {					
+					$valeurs_fiches_a_associer[] = "('".$fiche_du_sentier."', 'smartFlore.sentiers.fiche', '".addslashes(trim($titre_encode_wiki))."')";
+				}
+			}
+		}
+		
+		$valeurs_a_inserer = $valeurs_sentiers_a_inserer + $valeurs_fiches_a_associer;
+		$requete_insertion .= implode(', '."\n", $valeurs_a_inserer);
+		// Tout est contenu dans la table triple du wiki, donc une seule requête suffit pour tout insérer
+		$this->wiki->Query($requete_insertion);
+		
+		echo 'Migration des sentiers effectuée'."\n";
+		exit;
 	}
 	
 	protected function migrerFormatSmartFlore() {	
