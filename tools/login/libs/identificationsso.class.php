@@ -176,7 +176,6 @@ class identificationSso {
 				// On demande à l'annuaire si le jeton est bien valide
 				$jeton_rafraichi = json_decode(file_get_contents($this->wiki->config['sso_url'].'rafraichir?token='.$token), true);
 				$nom_wiki = $this->verifierEtInsererUtilisateurParJeton($jeton_rafraichi);
-				$token_decode = $this->decoderToken($jeton_rafraichi['token']);
 
 				// dans le pire des cas, si on se déconnecte dans une autre application, on sera déconnecté 
 				// lorsque le jeton expirera
@@ -201,7 +200,6 @@ class identificationSso {
 			// On demande à l'annuaire si le jeton est bien valide
 			$jeton_rafraichi = json_decode(file_get_contents($this->wiki->config['sso_url'].'rafraichir?token='.$token), true);
 			$nom_wiki = $this->verifierEtInsererUtilisateurParJeton($jeton_rafraichi);
-			$token_decode = $this->decoderToken($jeton_rafraichi['token']);
 			$this->wiki->SetUser($this->wiki->LoadUser($nom_wiki));
 		}
 	}

@@ -498,7 +498,6 @@ class Wiki
 
 		// check bypass of rights or write privilege
 		$rights = $bypass_acls || ($comment_on ? $this->HasAccess("comment", $comment_on) : $this->HasAccess("write", $tag));
-			
 		if ($rights)
 		{
 			// is page new?
