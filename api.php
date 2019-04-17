@@ -43,8 +43,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 // do not change this line, you fool. In fact, don't change anything! Ever!
-define("WAKKA_VERSION", "0.1.1");
-define("WIKINI_VERSION", "0.5.0");
 require 'includes/constants.php';
 include 'includes/urlutils.inc.php';
 
@@ -81,7 +79,7 @@ class Wiki
 	var $_actionsAclsCache = array();
 
 	// constructor
-	function Wiki($config)
+	function __construct($config)
 	{
 		$this->config = $config;
 		// some host do not allow mysql_pconnect
@@ -1695,18 +1693,6 @@ if (file_exists("locked")) {
 	}
 }
 
-
-// compare versions, start installer if necessary
-if ($wakkaConfig["wakka_version"] && (!$wakkaConfig["wikini_version"])) { $wakkaConfig["wikini_version"]=$wakkaConfig["wakka_version"]; }
-if (($wakkaConfig["wakka_version"] != WAKKA_VERSION) || ($wakkaConfig["wikini_version"] != WIKINI_VERSION)) {
-	// start installer
-	if (!isset($_REQUEST["installAction"]) OR !$installAction = trim($_REQUEST["installAction"])) $installAction = "default";
-	include("setup/header.php");
-	if (file_exists("setup/".$installAction.".php")) include("setup/".$installAction.".php"); else echo "<i>Invalid action</i>" ;
-	include("setup/footer.php");
-	exit;
-}
-
 // Check if the server is configured to automatically compress the output
 if (!ini_get('zlib.output_compression') && !ini_get('zlib.output_handler'))
 { 
@@ -1765,5 +1751,4 @@ if (!isset($method)) $method='';
 if (!(preg_match('#^[A-Za-z0-9_]*$#',$method))) {
 	$method='';
 }
-include('tools/prepend.php');//$wiki->Run($page, $method);
 ?>
